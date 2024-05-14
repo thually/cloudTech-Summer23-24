@@ -7,6 +7,9 @@ from nltk.corpus import stopwords
 from gensim.models import Word2Vec
 import numpy as np
 
+"""
+"C:\Users\alejo\OneDrive - Universidad Nacional de Colombia\Documentos\Semestre 2024-1\Courses\Cloud technologies\Labs\env\Scripts\activate"
+"""
 
 def preprocess_text(text):
     # Tokenization
@@ -47,15 +50,18 @@ mltoken = token_response.json()["access_token"]
 
 header = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + mltoken}
 
-review = input("Enter a review to be scored:\n")
-review = preprocess_text(review)
-review = review_to_vec(review).tolist()
-input_fields = [f'vec_{i}' for i in range(100)]
+while True:
+    review = input("Enter a review to be scored:\n")
+    if review == "exit" or review == "quit": break
+    review = preprocess_text(review)
+    review = review_to_vec(review).tolist()
+    input_fields = [f'vec_{i}' for i in range(100)]
 
-# NOTE: manually define and pass the array(s) of values to be scored in the next line
-payload_scoring = {"input_data": [{"fields": input_fields, "values": [review]}]}
+    # NOTE: manually define and pass the array(s) of values to be scored in the next line
+    payload_scoring = {"input_data": [{"fields": input_fields, "values": [review]}]}
 
-response_scoring = requests.post('https://us-south.ml.cloud.ibm.com/ml/v4/deployments/f3e84b2a-a7a7-4e85-9f8e-acd775610ffd/predictions?version=2021-05-01', json=payload_scoring,
- headers={'Authorization': 'Bearer ' + mltoken})
-print("Scoring response")
-pp(response_scoring.json())
+    response_scoring = requests.post('https://us-south.ml.cloud.ibm.com/ml/v4/deployments/f3e84b2a-a7a7-4e85-9f8e-acd775610ffd/predictions?version=2021-05-01', json=payload_scoring,
+    headers={'Authorization': 'Bearer ' + mltoken})
+    print("Scoring response")
+    pp(response_scoring.json())
+    print()
